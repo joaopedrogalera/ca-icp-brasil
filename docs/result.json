@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-05-28T14:26:00.059Z",
+  "totalCertificates": 3,
+  "certificates": [
+    {
+      "subject": "C=BR\nO=ICP-Brasil\nOU=Instituto Nacional de Tecnologia da Informacao - ITI\nCN=Autoridade Certificadora Raiz Brasileira v10",
+      "fingerprint": "6C:15:5E:D7:27:1A:90:4A:0D:C0:40:F0:C8:57:FF:53:BF:6D:B2:90",
+      "validFrom": "2019-07-01T19:15:59.000Z",
+      "validTo": "2032-07-01T12:00:59.000Z",
+      "url": "https://repositorio.serpro.gov.br/docs/icpbrasilv10.crt",
+      "filename": "icpbrasilv10.crt"
+    },
+    {
+      "subject": "C=BR\nO=ICP-Brasil\nOU=Instituto Nacional de Tecnologia da Informacao - ITI\nCN=Autoridade Certificadora Raiz Brasileira v12",
+      "fingerprint": "B8:F2:1E:4D:86:61:8E:16:78:7A:4D:E2:58:14:2F:DF:2D:61:82:3C",
+      "validFrom": "2024-10-22T14:41:24.000Z",
+      "validTo": "2037-10-22T12:00:24.000Z",
+      "url": "https://repositorio.serpro.gov.br/docs/icpbrasilv12.crt",
+      "filename": "icpbrasilv12.crt"
+    },
+    {
+      "subject": "C=BR\nO=ICP-Brasil\nOU=Instituto Nacional de Tecnologia da Informacao - ITI\nCN=Autoridade Certificadora Raiz Brasileira v5",
+      "fingerprint": "4A:CA:DA:B1:4B:74:BF:4F:BA:7B:AC:E6:4B:91:80:1C:44:B8:CC:66",
+      "validFrom": "2016-03-02T13:01:38.000Z",
+      "validTo": "2029-03-02T23:59:38.000Z",
+      "url": "https://repositorio.serpro.gov.br/docs/icpbrasilv5.crt",
+      "filename": "icpbrasilv5.crt"
+    }
+  ]
+}
