@@ -1,0 +1,14 @@
+theme: jekyll-theme-architect
+title: CA-ICP Brasil
+description: Extrator de certificados do repositório SERPRO
+url: https://joaopedrogalera.github.io/ca-icp-brasil
+
+# Configurações básicas
+markdown: kramdown
+highlighter: rouge
+
+# Navegação
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
