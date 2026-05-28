@@ -68,7 +68,7 @@ https://joaopedrogalera.github.io/ca-icp-brasil/cacerts.pem
 Faça download e use localmente:
 
 ```bash
-curl -o cacerts.pem https://joaopedrogalera.github.io/ca-icp-brasil/cacerts.pem
+curl -o cacerts.pem https://joaopedrogalera.com/ca-icp-brasil/cacerts.pem
 export NODE_EXTRA_CA_CERTS=$(pwd)/cacerts.pem
 node seu-app.js
 ```
