@@ -33,6 +33,18 @@ npm start
 
 Isso compila o TypeScript e executa `dist/index.js`.
 
+## Opções de linha de comando
+
+O script suporta os seguintes argumentos:
+
+```bash
+npm start -- --outfile ca-icp-brasil.pem --logfile result.json
+```
+
+- `--outfile <arquivo>`: arquivo de saída do bundle PEM (padrão `ca-icp-brasil.pem`).
+- `--logfile <arquivo>`: arquivo JSON de log com informações dos certificados validados (padrão `result.json`).
+- `--nolog`: não gera o arquivo de log JSON.
+
 ## Variável de ambiente
 
 O script usa por padrão:

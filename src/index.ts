@@ -265,7 +265,9 @@ async function main() {
 
             const nologArg = getArgValue('--nolog');
             if (!nologArg.exists) {
-                await saveResultsJson(certificates);
+                const logfileArg = getArgValue('--logfile');
+                const logfile = logfileArg.value || 'result.json';
+                await saveResultsJson(certificates, logfile);
             }
         } else {
             console.log(`No valid certificates to save`);
