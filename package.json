@@ -1,0 +1,26 @@
+{
+  "name": "ca-icp-brasil",
+  "version": "1.0.0",
+  "description": "Script para baixar automáticamente certificados raizes do ICP-Brasil",
+  "homepage": "https://github.com/joaopedrogalera/ca-icp-brasil#readme",
+  "bugs": {
+    "url": "https://github.com/joaopedrogalera/ca-icp-brasil/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joaopedrogalera/ca-icp-brasil.git"
+  },
+  "license": "ISC",
+  "author": "João Pedro da Matta Galera da Silva",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "tsc && node dist/index.js"
+  },
+  "dependencies": {
+    "@types/node": "^25.9.1",
+    "cheerio": "^1.2.0"
+  }
+}
