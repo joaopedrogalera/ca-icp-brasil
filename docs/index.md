@@ -55,6 +55,24 @@ npm start -- --outfile ca-icp-brasil.pem --logfile result.json
 - `--logfile <arquivo>`: arquivo JSON de log com informações dos certificados validados (padrão `result.json`).
 - `--nolog`: não gera o arquivo de log JSON.
 
+## Certificados Pré-gerados
+
+Um workflow no GitHub Actions atualiza automaticamente os certificados **todos os dias** e os disponibiliza para download em:
+
+```
+https://joaopedrogalera.github.io/ca-icp-brasil/cacerts.pem
+```
+
+(A URL redireciona para `https://joaopedrogalera.com/ca-icp-brasil/cacerts.pem`)
+
+Faça download e use localmente:
+
+```bash
+curl -o cacerts.pem https://joaopedrogalera.github.io/ca-icp-brasil/cacerts.pem
+export NODE_EXTRA_CA_CERTS=$(pwd)/cacerts.pem
+node seu-app.js
+```
+
 ## Variável de ambiente
 
 O script usa por padrão:
