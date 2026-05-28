@@ -49,10 +49,25 @@ function filterUrls(urls: string[], baseUrl: string): string[] {
         })
         .filter((resolvedUrl): resolvedUrl is string => resolvedUrl !== null)
         // Filtra apenas arquivos que correspondem ao padrão de certificado ICP-Brasil
-        .filter((resolvedUrl) => /icpbrasil[v\d+]*\.crt/.test(resolvedUrl));
+        .filter((resolvedUrl) => /icpbrasil(?:v\d+)?\.crt/.test(resolvedUrl));
 
     console.log(`${filteredUrls.length} ICP-Brasil certificate URLs found`);
     return filteredUrls;
+}
+
+// Helper simples para ler um parâmetro da linha de comando e seu valor seguinte
+function getArgValue(param: string): { exists: boolean; value?: string } {
+    const args = process.argv.slice(2);
+    const index = args.indexOf(param);
+
+    if (index === -1) {
+        return { exists: false };
+    }
+
+    return {
+        exists: true,
+        value: args[index + 1],
+    };
 }
 
 // Interface com as informações validadas do certificado
@@ -61,6 +76,7 @@ interface CertificateInfo {
     subject: string;         // Assunto/identificação do certificado
     validFrom: string;       // Data inicial de validade (ISO format)
     validTo: string;         // Data final de validade (ISO format)
+    fingerprint: string;     // Fingerprint SHA-1 do certificado
     url?: string;            // URL de origem do certificado
     filename?: string;       // Nome do arquivo do certificado
 }
@@ -82,6 +98,7 @@ function validateCertificate(pem: string): CertificateInfo {
             subject: certificate.subject,
             validFrom: validFrom.toISOString(),
             validTo: validTo.toISOString(),
+            fingerprint: certificate.fingerprint,
         };
     } catch (error) {
         console.error('Error validating certificate:', error);
@@ -90,6 +107,7 @@ function validateCertificate(pem: string): CertificateInfo {
             subject: 'Unknown',
             validFrom: '',
             validTo: '',
+            fingerprint: '',
         };
     }
 }
@@ -97,7 +115,7 @@ function validateCertificate(pem: string): CertificateInfo {
 // Salva certificados válidos em um arquivo PEM com comentários antes de cada cert
 async function saveCertificates(
     certificates: { cert: string; info: CertificateInfo }[],
-    targetFile = 'Serpro.pem'
+    targetFile = 'ca-icp-brasil.pem'
 ): Promise<void> {
     console.log(`\nSaving ${certificates.length} valid certificate(s) to ${targetFile}`);
 
@@ -114,6 +132,7 @@ async function saveCertificates(
             const comments = [
                 `# Certificate ${index + 1}`,
                 `# Subject: ${info.subject}`,
+                `# Fingerprint: ${info.fingerprint}`,
                 `# Valid From: ${info.validFrom}`,
                 `# Valid Until: ${info.validTo}`,
                 info.url ? `# URL: ${info.url}` : '',
@@ -123,12 +142,34 @@ async function saveCertificates(
                 .filter(Boolean)
                 .join('\n');
 
-            return `${comments}${cert.trim()}\n`;
+            return `${comments}\n${cert.trim()}\n`;
         })
         .join('\n');
 
     await writeFile(targetFile, `${header}${body}`, 'utf8');
     console.log(`File saved: ${targetFile}`);
+}
+
+// Salva informações dos certificados em um arquivo JSON
+async function saveResultsJson(
+    certificates: { cert: string; info: CertificateInfo }[],
+    resultFile = 'result.json'
+): Promise<void> {
+    const results = {
+        timestamp: new Date().toISOString(),
+        totalCertificates: certificates.length,
+        certificates: certificates.map(({ info }) => ({
+            subject: info.subject,
+            fingerprint: info.fingerprint,
+            validFrom: info.validFrom,
+            validTo: info.validTo,
+            url: info.url || null,
+            filename: info.filename || null,
+        })),
+    };
+
+    await writeFile(resultFile, JSON.stringify(results, null, 2), 'utf8');
+    console.log(`Results saved: ${resultFile}`);
 }
 
 // Download e validação do arquivo de certificado
@@ -173,11 +214,11 @@ async function main() {
         const pageContent = await getRepositoryPage(BASE_URL);
 
         // Passo 2: Extrair URLs da tabela
-        console.log(`\n[2/5] Extracting URLs...`);
+        console.log(`\n[2/4] Extracting URLs...`);
         const tableUrls = getTableUrls(pageContent);
 
         // Passo 3: Filtrar URLs de certificados válidos
-        console.log(`\n[3/5] Filtering ICP-Brasil certificates...`);
+        console.log(`\n[3/4] Filtering ICP-Brasil certificates...`);
         const filteredUrls = filterUrls(tableUrls, BASE_URL);
 
         if (filteredUrls.length === 0) {
@@ -186,7 +227,7 @@ async function main() {
         }
 
         // Passo 4: Processar cada certificado
-        console.log(`\n[4/5] Processing ${filteredUrls.length} certificate(s)...\n`);
+        console.log(`\n[4/4] Processing ${filteredUrls.length} certificate(s)...\n`);
         let certificates: {cert: string, info: CertificateInfo}[] = [];
         let processedCount = 0;
 
@@ -216,8 +257,16 @@ async function main() {
         }
 
         if (certificates.length > 0) {
-            console.log(`\n[5/5] Saving valid certificates to PEM file...`);
-            await saveCertificates(certificates);
+            const outfileArg = getArgValue('--outfile');
+            const outputFile = outfileArg.value || 'ca-icp-brasil.pem';
+
+            console.log(`\n[5/5] Saving valid certificates to PEM file: ${outputFile}`);
+            await saveCertificates(certificates, outputFile);
+
+            const nologArg = getArgValue('--nolog');
+            if (!nologArg.exists) {
+                await saveResultsJson(certificates);
+            }
         } else {
             console.log(`No valid certificates to save`);
         }
