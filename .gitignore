@@ -1,4 +1,5 @@
 dist/
 node_modules/
 ca-icp-brasil.pem
-result.json
+/result.json
+tmp/

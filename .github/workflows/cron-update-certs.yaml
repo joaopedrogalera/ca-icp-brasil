@@ -1,0 +1,44 @@
+name: Verificar e Atualizar Certificados
+
+on:
+  schedule:
+    - cron: '15 0 * * *'
+  workflow_dispatch: 
+
+jobs:
+  build-and-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Temp directory for output files
+        run: mkdir -p tmp
+
+      
+      - name: Run generation script
+        run: npm start -- --outfile tmp/cacerts.pem --logfile tmp/result.json
+
+      # Verifica se o arquivo gerado é diferente do que está no repositório
+      - name: Run verification script
+        id: valida
+        run: node .github/scripts/valida.js
+
+      # 3. Só executa se o output "deve_commitar" for 'true'
+      - name: Commit and Push changes
+        if: steps.valida.outputs.updated == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto: Certificados atualizados [skip ci]"
+          file_pattern: 'docs/cacerts.pem docs/result.json'
