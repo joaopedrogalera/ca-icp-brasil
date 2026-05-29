@@ -1,3 +1,14 @@
+/*
+Project: ca-icp-brasil
+Description: Download ICP-Brasil root certificates from the SERPRO public repository,
+             validate them and generate a PEM bundle and JSON report.
+Author: João Pedro da Matta Galera da Silva
+License: MIT
+Repository: https://github.com/joaopedrogalera/ca-icp-brasil
+Docs: README.md and docs/ folder contain usage and motivation details.
+Node: Tested with Node 24
+*/
+
 import * as cheerio from 'cheerio';
 import { X509Certificate } from 'crypto';
 import { writeFile } from 'node:fs/promises';
